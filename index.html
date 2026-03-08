@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <meta name="theme-color" content="#080810"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="BeautyScan"/>
+  <meta name="description" content="Quét khuôn mặt AI - Chỉ mang tính giải trí"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="icon-192.png"/>
+  <link rel="icon" href="icon-192.png"/>
+  <title>BeautyScan AI ✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ══ HEADER ══ -->
+  <header class="hdr">
+    <div class="hdr-logo">
+      <div class="logo-hex">
+        <svg viewBox="0 0 40 40"><polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="var(--cyan)" stroke-width="1.5"/></svg>
+        <span>✦</span>
+      </div>
+      <div class="hdr-title">
+        <span class="hdr-main">BEAUTY<span class="hdr-accent">SCAN</span></span>
+        <span class="hdr-sub">AI FACE ANALYSIS v2.4</span>
+      </div>
+    </div>
+    <div class="hdr-badge">
+      <span class="badge-dot"></span>LIVE
+    </div>
+  </header>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main id="mainView">
+
+    <!-- ─── WELCOME SCREEN ─── -->
+    <div id="welcomeScreen" class="screen active">
+      <div class="welcome-graphic">
+        <div class="face-icon-wrap">
+          <div class="face-ring r1"></div>
+          <div class="face-ring r2"></div>
+          <div class="face-ring r3"></div>
+          <div class="face-icon-core">
+            <svg viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="28" stroke="var(--cyan)" stroke-width="1.2" stroke-dasharray="4 3"/>
+              <circle cx="31" cy="33" r="5" stroke="var(--cyan)" stroke-width="1.5"/>
+              <circle cx="49" cy="33" r="5" stroke="var(--cyan)" stroke-width="1.5"/>
+              <path d="M30 52 Q40 60 50 52" stroke="var(--pink)" stroke-width="2" stroke-linecap="round"/>
+              <line x1="40" y1="12" x2="40" y2="18" stroke="var(--cyan)" stroke-width="1"/>
+              <line x1="40" y1="62" x2="40" y2="68" stroke="var(--cyan)" stroke-width="1"/>
+              <line x1="12" y1="40" x2="18" y2="40" stroke="var(--cyan)" stroke-width="1"/>
+              <line x1="62" y1="40" x2="68" y2="40" stroke="var(--cyan)" stroke-width="1"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="welcome-text">
+        <h1>Phân Tích<br/><span class="gradient-text">Khuôn Mặt AI</span></h1>
+        <p class="welcome-desc">Công nghệ AI tiên tiến phân tích các đặc điểm khuôn mặt và tính điểm Beauty Score của bạn.<br/><em>Chỉ mang tính giải trí ✨</em></p>
+      </div>
+
+      <div class="feature-chips">
+        <span class="chip">🔬 Face Detection</span>
+        <span class="chip">📊 AI Scoring</span>
+        <span class="chip">⚡ Real-time</span>
+      </div>
+
+      <button class="btn-primary" id="startCameraBtn">
+        <span class="btn-icon">📷</span>
+        <span>Bật Camera</span>
+        <div class="btn-glow"></div>
+      </button>
+
+      <p class="disclaimer">Camera chỉ hoạt động cục bộ trên thiết bị của bạn</p>
+    </div>
+
+    <!-- ─── CAMERA SCREEN ─── -->
+    <div id="cameraScreen" class="screen">
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="sb-left">
+          <span class="sb-dot active"></span>
+          <span class="sb-label" id="statusLabel">Hướng camera về phía khuôn mặt</span>
+        </div>
+        <div class="sb-right">
+          <span id="faceCount" class="sb-count">0 face</span>
+        </div>
+      </div>
+
+      <!-- Camera viewport -->
+      <div class="cam-wrap" id="camWrap">
+        <!-- Scanlines overlay -->
+        <div class="scanlines"></div>
+        <!-- Corner brackets -->
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+        <!-- Face target ring -->
+        <div class="face-target" id="faceTarget">
+          <svg viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="85" stroke="var(--cyan)" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.6"/>
+            <circle cx="100" cy="100" r="65" stroke="var(--pink)" stroke-width="0.8" opacity="0.4"/>
+          </svg>
+        </div>
+        <!-- Scan line -->
+        <div class="scan-beam" id="scanBeam"></div>
+        <!-- Video -->
+        <video id="video" autoplay muted playsinline></video>
+        <!-- Canvas overlay -->
+        <canvas id="overlay"></canvas>
+        <!-- Scan VFX overlay -->
+        <div class="scan-vfx" id="scanVfx">
+          <div class="vfx-grid"></div>
+          <div class="vfx-text" id="vfxText">INITIALIZING...</div>
+        </div>
+      </div>
+
+      <!-- HUD data -->
+      <div class="hud-row">
+        <div class="hud-cell">
+          <span class="hud-label">RESOLUTION</span>
+          <span class="hud-val" id="hudRes">—</span>
+        </div>
+        <div class="hud-cell">
+          <span class="hud-label">CONFIDENCE</span>
+          <span class="hud-val" id="hudConf">—</span>
+        </div>
+        <div class="hud-cell">
+          <span class="hud-label">LANDMARK</span>
+          <span class="hud-val" id="hudLand">68pt</span>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="cam-actions">
+        <button class="btn-scan" id="scanBtn" disabled>
+          <div class="scan-btn-inner">
+            <span class="scan-icon">⬡</span>
+            <span class="scan-label">QUÉT KHUÔN MẶT</span>
+          </div>
+          <div class="scan-btn-glow"></div>
+        </button>
+        <button class="btn-back" id="backBtn">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10H5M9 5l-5 5 5 5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─── RESULT SCREEN ─── -->
+    <div id="resultScreen" class="screen">
+      <div class="result-inner">
+
+        <!-- Score ring -->
+        <div class="score-wrap">
+          <svg class="score-ring" viewBox="0 0 220 220">
+            <circle cx="110" cy="110" r="95" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="12"/>
+            <circle cx="110" cy="110" r="95" fill="none" stroke="url(#scoreGrad)" stroke-width="12"
+              stroke-linecap="round" stroke-dasharray="597" stroke-dashoffset="597"
+              id="scoreArc" transform="rotate(-90 110 110)"/>
+            <defs>
+              <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="var(--cyan)"/>
+                <stop offset="100%" stop-color="var(--pink)"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="score-center">
+            <div class="score-num" id="scoreNum">0</div>
+            <div class="score-denom">/100</div>
+            <div class="score-label">BEAUTY SCORE</div>
+          </div>
+          <!-- Particles -->
+          <div class="score-particles" id="particles"></div>
+        </div>
+
+        <!-- Grade badge -->
+        <div class="grade-badge" id="gradeBadge">
+          <span id="gradeEmoji">⭐</span>
+          <span id="gradeText">LOADING</span>
+        </div>
+
+        <!-- Comment -->
+        <div class="result-comment-wrap">
+          <div class="comment-tag">💬 AI NHẬN XÉT</div>
+          <div class="result-comment" id="resultComment">Đang phân tích...</div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <!-- Actions -->
+        <div class="result-actions">
+          <button class="btn-rescan" id="rescanBtn">🔄 Quét lại</button>
+          <button class="btn-share" id="shareBtn">📤 Chia sẻ</button>
+        </div>
+
+        <p class="result-disclaimer">⚠️ Chỉ mang tính giải trí — không phải đánh giá thật</p>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- PWA Install Banner -->
+<div class="pwa-banner" id="pwaBanner" hidden>
+  <img src="icon-192.png" alt="" width="40" height="40"/>
+  <div class="pwa-info">
+    <strong>BeautyScan AI</strong>
+    <span>Cài vào màn hình chính</span>
+  </div>
+  <button class="btn-pwa-install" id="pwaInstall">Cài</button>
+  <button class="btn-pwa-x" id="pwaDismiss">✕</button>
+</div>
+
+<!-- Scripts -->
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () =>
+      navigator.serviceWorker.register('./service-worker.js').catch(() => {})
+    );
+  }
+  let _dp = null;
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault(); _dp = e;
+    document.getElementById('pwaBanner').hidden = false;
+  });
+  document.getElementById('pwaInstall').addEventListener('click', () => {
+    if (!_dp) return;
+    _dp.prompt();
+    _dp.userChoice.then(() => { document.getElementById('pwaBanner').hidden = true; _dp = null; });
+  });
+  document.getElementById('pwaDismiss').addEventListener('click', () => {
+    document.getElementById('pwaBanner').hidden = true;
+  });
+</script>
+</body>
+</html>
